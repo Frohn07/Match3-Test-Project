@@ -19,16 +19,16 @@ public class GridModel
     }
 
     public Cell[,] grid;
-    public int widht = 5;
+    public int width = 5;
     public int height = 5;
     public int colorCount = 5;
 
 
     public GridModel(int widht, int height)
     {
-        this.widht = widht;
+        this.width = widht;
         this.height = height;
-        grid = new Cell[this.widht, this.height];
+        grid = new Cell[this.width, this.height];
 
         for (int i = 0; i < widht; i++)
         {
@@ -43,7 +43,7 @@ public class GridModel
     {
         do
         {
-            for (int i = 0; i < widht; i++)
+            for (int i = 0; i < width; i++)
             {
                 for (int j = 0; j < height; j++)
                 {
@@ -71,7 +71,7 @@ public class GridModel
         {
             int matchLength = 1;
 
-            for(int i = 1; i < widht; i++)
+            for(int i = 1; i < width; i++)
             {
                 if (!grid[i, j].isEmpty && !grid[i - 1, j].isEmpty && grid[i, j].type == grid[i - 1, j].type)
                 {
@@ -93,7 +93,7 @@ public class GridModel
 
             if(matchLength >= 3)
             {
-                for (int k = widht - matchLength; k < widht; k++)
+                for (int k = width - matchLength; k < width; k++)
                 {
                     result.Add(new Vector2Int(k, j));
                 }
@@ -101,7 +101,7 @@ public class GridModel
         }
 
         //Vertical search
-        for(int i = 0; i < widht; i++)
+        for(int i = 0; i < width; i++)
         {
             int matchLength = 1;
 
@@ -154,7 +154,7 @@ public class GridModel
 
     public Cell GetCell(int i, int j) 
     {
-        if(i < 0 && i > widht && j < 0 && j > height)
+        if(i < 0 && i > width && j < 0 && j > height)
             return null;
 
         return grid[i, j];
