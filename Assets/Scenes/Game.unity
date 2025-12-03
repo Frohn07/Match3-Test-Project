@@ -129,7 +129,6 @@ GameObject:
   m_Component:
   - component: {fileID: 51035206}
   - component: {fileID: 51035205}
-  - component: {fileID: 51035204}
   m_Layer: 0
   m_Name: MAIN CONTROLLERS
   m_TagString: Untagged
@@ -137,18 +136,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &51035204
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 51035203}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1a1cecc2802647b43931b7ff5e6f3435, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::InputHandler
 --- !u!114 &51035205
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -292,7 +279,7 @@ Camera:
   far clip plane: 1000
   field of view: 34
   orthographic: 1
-  orthographic size: 46.65
+  orthographic size: 8.08
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2

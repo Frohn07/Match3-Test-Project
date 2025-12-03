@@ -71,10 +71,10 @@ public class Crystal : MonoBehaviour
 
     public void VisualSelect() 
     {
-        transform.localScale += Vector3.one * 1.3f;
+        transform.localScale += Vector3.one * 0.1f;
     }
     public void VisualDeselect() 
     {
-        transform.localScale -= Vector3.one * 1.3f;
+        transform.localScale -= Vector3.one * 0.1f;
     }
 }

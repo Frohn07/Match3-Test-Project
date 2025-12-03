@@ -20,16 +20,21 @@ public class InputHandler : MonoBehaviour
         }
 
         //Mobile Input
+
+        /*
         if (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began)
         {
             HandleClick(Input.GetTouch(0).position);
         }
+        */
     }
 
 
 
     private void HandleClick(Vector2 screenPosition) 
     {
+        if (mainCamera == null)
+            Debug.Log("call");
         Ray ray = mainCamera.ScreenPointToRay(screenPosition);
         RaycastHit2D hit = Physics2D.GetRayIntersection(ray);
 
