@@ -261,11 +261,11 @@ public class GridController : MonoBehaviour
     {
         bool moved = false;
 
-        for(int i = 0; i < gridModel.width; i++)
+        for(int j = 0; j < gridModel.width; j++)
         {
             int emptyCount = 0;
 
-            for(int j = gridModel.height - 1; j >= 0; j--)
+            for(int i = gridModel.height - 1; i >= 0; i--)
             {
                 GridModel.Cell cell = gridModel.grid[i, j];
 
@@ -276,7 +276,7 @@ public class GridController : MonoBehaviour
 
                 else if(emptyCount > 0)
                 {
-                    GridModel.Cell targetCell = gridModel.grid[i, j + emptyCount];
+                    GridModel.Cell targetCell = gridModel.grid[i + emptyCount,j];
 
                     targetCell.isEmpty = false;
                     targetCell.view = cell.view;
@@ -285,9 +285,9 @@ public class GridController : MonoBehaviour
 
                     if(targetCell.view != null)
                     {
-                        Vector3 targetPosition = GetWorldPostion(i, j + emptyCount);
+                        Vector3 targetPosition = GetWorldPostion(i + emptyCount, j);
                         StartCoroutine(MoveCrystal(targetCell.view, targetPosition, dropDuration));
-                        targetCell.view.SetPositionInGrid(new Vector2Int(i, j + emptyCount), targetPosition);
+                        targetCell.view.SetPositionInGrid(new Vector2Int(i + emptyCount, j), targetPosition);
                     }
 
                     cell.type = 0;
@@ -317,7 +317,7 @@ public class GridController : MonoBehaviour
                     int newCellType = UnityEngine.Random.Range(0, gridModel.colorCount);
                     Crystal crystal = poolManager.GetCrystal();
 
-                    Vector3 newPosition = GetWorldPostion(i, gridModel.height);
+                    Vector3 newPosition = GetWorldPostion(-gridModel.height, j);
                     crystal.Init(newCellType, new Vector2Int(i, j), newPosition);
 
                     Vector3 targetPosition = GetWorldPostion(i, j);
