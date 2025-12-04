@@ -57,25 +57,6 @@ public class GridController : MonoBehaviour
         inputHandler.Init(this);
     }
 
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.G)) 
-        {
-            ShowGridInCosole();
-        }
-    }
-
-    private void ShowGridInCosole() 
-    {
-        Cell[,] cells = gridModel.grid;
-
-        Debug.Log("cells type: ");
-        for (int i = 0; i < gridHeight; i++)
-        {
-            Debug.Log(cells[i, 0].type + "|" + cells[i, 1].type + "|" + cells[i, 2].type + "|" + cells[i, 3].type + "|" + cells[i, 4].type);
-        }
-    }
-
     private void CreateGrid()
     {
         for(int i = 0; i < gridWidth; i++)
@@ -145,8 +126,6 @@ public class GridController : MonoBehaviour
     private IEnumerator SwapProcces(Vector2Int position1, Vector2Int position2)
     {
         isProcesssing = true;
-
-        
 
 
         Crystal selectedCrystal = gridModel.grid[position1.x, position1.y].view;
@@ -337,6 +316,8 @@ public class GridController : MonoBehaviour
         yield return new WaitForSeconds(dropDuration);
     }
 
+
+    /*
     private void OnDrawGizmos()
     {
         if(!Application.isPlaying)
@@ -353,4 +334,5 @@ public class GridController : MonoBehaviour
             }
         }
     }
+    */
 }
