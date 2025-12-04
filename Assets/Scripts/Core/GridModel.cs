@@ -41,6 +41,8 @@ public class GridModel
 
     public void InitGrid() 
     {
+        Debug.Log("Init");
+
         do
         {
             for (int i = 0; i < width; i++)
@@ -49,8 +51,13 @@ public class GridModel
                 {
                     grid[i, j].type = UnityEngine.Random.Range(0, colorCount);
                     grid[i, j].isEmpty = false;
+
+                    Debug.Log( "grid = " + "[" + i + " " + " " + j + "]" + " = " + " " + grid[i, j].type);
+
                 }
             }
+
+            Debug.Log("check mathes");
         }
         while (HasMatches());
     }
@@ -150,6 +157,8 @@ public class GridModel
         grid[position2.x, position2.y].type = tempType;
         grid[position2.x, position2.y].view = tempVeiw;
 
+
+        Debug.Log("SWAP");
     }
 
     public Cell GetCell(int i, int j) 

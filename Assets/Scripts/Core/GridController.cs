@@ -1,10 +1,11 @@
-using UnityEngine;
 using System;
-using Unity.VisualScripting.Antlr3.Runtime.Tree;
 using System.Collections;
-using UnityEngine.UIElements;
 using System.Collections.Generic;
+using Unity.VisualScripting.Antlr3.Runtime.Tree;
 using UnityEditor.Rendering;
+using UnityEngine;
+using UnityEngine.UIElements;
+using static GridModel;
 
 public class GridController : MonoBehaviour
 {
@@ -56,6 +57,25 @@ public class GridController : MonoBehaviour
         inputHandler.Init(this);
     }
 
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.G)) 
+        {
+            ShowGridInCosole();
+        }
+    }
+
+    private void ShowGridInCosole() 
+    {
+        Cell[,] cells = gridModel.grid;
+
+        Debug.Log("cells type: ");
+        for (int i = 0; i < gridHeight; i++)
+        {
+            Debug.Log(cells[i, 0].type + "|" + cells[i, 1].type + "|" + cells[i, 2].type + "|" + cells[i, 3].type + "|" + cells[i, 4].type);
+        }
+    }
+
     private void CreateGrid()
     {
         for(int i = 0; i < gridWidth; i++)
@@ -75,7 +95,7 @@ public class GridController : MonoBehaviour
 
     public Vector3 GetWorldPostion(int x, int y)
     {
-        Vector3 result = new Vector3( x * cellSize + gridOffcet.x, y * cellSize + gridOffcet.y, 0);
+        Vector3 result = new Vector3( y * cellSize + gridOffcet.x, (-1) * x * cellSize + gridOffcet.y, 0);
         return result;
     }
 
@@ -98,9 +118,14 @@ public class GridController : MonoBehaviour
             Vector2Int position1 = selectCrystal.GetGridPostion();
             Vector2Int position2 = crystal.GetGridPostion();
 
-            if (AreNeighbors(position1, position2)) 
+            if (AreNeighbors(position1, position2))
             {
                 StartCoroutine(SwapProcces(position1, position2));
+            }
+            else 
+            {
+                selectCrystal.VisualDeselect();
+                selectCrystal = null;
             }
         }
     }
@@ -121,43 +146,57 @@ public class GridController : MonoBehaviour
     {
         isProcesssing = true;
 
+        
+
+
+        Crystal selectedCrystal = gridModel.grid[position1.x, position1.y].view;
+        Crystal targetGristall = gridModel.grid[position2.x, position2.y].view;
+
+        Vector3 selectedCrystalPosition = GetWorldPostion(position1.x, position1.y);
+        Vector3 targetCrystalPosition = GetWorldPostion(position2.x, position2.y); // target crystal pos
+        
+
         gridModel.Swap(position1, position2);
 
-
-        Crystal crystal1 = gridModel.grid[position1.x, position1.y].view;
-        Crystal crystal2 = gridModel.grid[position2.x, position2.y].view;
-
-        Vector3 target1 = GetWorldPostion(position2.x, position2.y);
-        Vector3 target2 = GetWorldPostion(position1.x, position1.y);
-
-        StartCoroutine(MoveCrystal(crystal1, target1, swapDuration));
-        StartCoroutine(MoveCrystal(crystal2, target2, swapDuration));
+        StartCoroutine(MoveCrystal(selectedCrystal, targetCrystalPosition, swapDuration));
+        StartCoroutine(MoveCrystal(targetGristall, selectedCrystalPosition, swapDuration));
 
         yield return new WaitForSeconds(swapDuration);
 
-        crystal1.SetPositionInGrid(position2, target1);
-        crystal2.SetPositionInGrid(position1, target2);
+        selectedCrystal.SetPositionInGrid(position2, targetCrystalPosition);
+        targetGristall.SetPositionInGrid(position1, selectedCrystalPosition);
 
-        List<Vector2Int> mathes = gridModel.FindAllMathes();
 
-        if(mathes.Count > 0)
+        
+       List<Vector2Int> mathes = gridModel.FindAllMathes();
+
+        if (mathes.Count > 0)
         {
             yield return StartCoroutine(ProcessMatches(mathes));
         }
+
+        /*
         else
         {
-            gridModel.Swap(position1, position2);
+            
+           gridModel.Swap(position1, position2);
 
-            StartCoroutine(MoveCrystal(crystal1, GetWorldPostion(position1.x, position1.y), swapDuration));
-            StartCoroutine(MoveCrystal(crystal2, GetWorldPostion(position2.x, position2.y), swapDuration));
+           StartCoroutine(MoveCrystal(crystal1, GetWorldPostion(position1.x, position1.y), swapDuration));
+           StartCoroutine(MoveCrystal(crystal2, GetWorldPostion(position2.x, position2.y), swapDuration));
 
-            yield return new WaitForSeconds(swapDuration);
+           yield return new WaitForSeconds(swapDuration);
 
-            crystal1.SetPositionInGrid(position1, GetWorldPostion(position1.x, position1.y));
-            crystal1.SetPositionInGrid(position2, GetWorldPostion(position2.x, position2.y));
+           crystal1.SetPositionInGrid(position1, GetWorldPostion(position1.x, position1.y));
+           crystal1.SetPositionInGrid(position2, GetWorldPostion(position2.x, position2.y));
 
 
 
+       }
+       */
+        if (selectCrystal != null)
+        {
+            selectCrystal.VisualDeselect();
+            selectCrystal = null;
         }
 
         isProcesssing = false;

@@ -18,6 +18,8 @@ public class Crystal : MonoBehaviour
     private Vector3 worldPosition;
     private bool isMoving = false;
 
+    public int typeDisplay;
+
     public int type 
     {
         get;
@@ -30,9 +32,19 @@ public class Crystal : MonoBehaviour
         this.type = type;
 
         SetPositionInGrid(gridPosition, worldPosition);
+
+        this.gridPosition = gridPosition;
+        this.worldPosition = worldPosition;
+        transform.position = worldPosition;
+
         UpdateType(this.type);
     }
 
+
+    private void Update()
+    {
+       typeDisplay = type;
+    }
 
     public void UpdateType(int newType)
     {
@@ -49,6 +61,7 @@ public class Crystal : MonoBehaviour
         this.gridPosition = newGridPosition;
         this.worldPosition = newWordPostion;
 
+        /*
         if (animate)
         {
             isMoving = true;
@@ -57,6 +70,8 @@ public class Crystal : MonoBehaviour
         {
             transform.position = worldPosition;
         }
+        */
+        
     }
 
     public Vector2Int GetGridPostion()
