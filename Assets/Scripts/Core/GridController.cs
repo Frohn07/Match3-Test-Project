@@ -5,6 +5,7 @@ using Unity.VisualScripting.Antlr3.Runtime.Tree;
 using UnityEditor.Rendering;
 using UnityEngine;
 using UnityEngine.UIElements;
+using Zenject;
 using static GridModel;
 
 public class GridController : MonoBehaviour
@@ -12,6 +13,7 @@ public class GridController : MonoBehaviour
     [Header("Grid Settings")]
     [SerializeField] private int gridWidth = 5;
     [SerializeField] private int gridHeight = 5;
+    [SerializeField] private int crystalsColorCount = 5;
     [SerializeField] private float cellSize = 1f;
     [SerializeField] private Vector2 gridOffcet = Vector2.zero;
 
@@ -26,7 +28,7 @@ public class GridController : MonoBehaviour
     [SerializeField] private float spawnDelay = 1f;
 
 
-    private GridModel gridModel;
+    private IGridModel gridModel;
     private InputHandler inputHandler;
     private PoolManager poolManager;
 
@@ -37,21 +39,29 @@ public class GridController : MonoBehaviour
     public Action OnMoveComplete;
 
 
+    
+    [Inject]
+    public void Construct(IGridModel gridModel)
+    {
+        this.gridModel = gridModel;
+        Debug.Log("INIT FRON INJECT");
+    }
+    
 
 
 
     private void Start()
     {
+        
         Init();
         CreateGrid();
     }
 
     public void Init() 
     {
-        gridModel = new GridModel(gridWidth, gridHeight);
         gridModel.InitGrid();
 
-        poolManager = new PoolManager(crystalPrefab, gridParent, gridHeight * gridWidth + 10); // зачем + 10? уточнить
+        poolManager = new PoolManager(crystalPrefab, gridParent, gridHeight * gridWidth + 10);
 
         inputHandler = gameObject.AddComponent<InputHandler>();
         inputHandler.Init(this);
@@ -66,8 +76,8 @@ public class GridController : MonoBehaviour
                 Vector3 worldPosition = GetWorldPostion(i, j);
                 Crystal crystal = poolManager.GetCrystal();
 
-                crystal.Init(gridModel.grid[i, j].type, new Vector2Int(i, j), worldPosition);
-                gridModel.grid[i, j].view = crystal;
+                crystal.Init(gridModel.GetGrid()[i, j].type, new Vector2Int(i, j), worldPosition);
+                gridModel.GetGrid()[i, j].view = crystal;
 
             }
         }
@@ -128,8 +138,8 @@ public class GridController : MonoBehaviour
         isProcesssing = true;
 
 
-        Crystal selectedCrystal = gridModel.grid[position1.x, position1.y].view;
-        Crystal targetGristall = gridModel.grid[position2.x, position2.y].view;
+        Crystal selectedCrystal = gridModel.GetGrid()[position1.x, position1.y].view;
+        Crystal targetGristall = gridModel.GetGrid()[position2.x, position2.y].view;
 
         Vector3 selectedCrystalPosition = GetWorldPostion(position1.x, position1.y);
         Vector3 targetCrystalPosition = GetWorldPostion(position2.x, position2.y); // target crystal pos
@@ -222,7 +232,7 @@ public class GridController : MonoBehaviour
         for(int i = 0; i < matches.Count; i++)
         {
             Vector2Int position = matches[i];
-            GridModel.Cell cell = gridModel.grid[position.x, position.y];
+            Cell cell = gridModel.GetGrid()[position.x, position.y];
 
             if(cell.view != null)
             {
@@ -246,7 +256,7 @@ public class GridController : MonoBehaviour
 
             for(int i = gridModel.height - 1; i >= 0; i--)
             {
-                GridModel.Cell cell = gridModel.grid[i, j];
+                Cell cell = gridModel.GetGrid()[i, j];
 
                 if(cell.isEmpty)
                 {
@@ -255,7 +265,7 @@ public class GridController : MonoBehaviour
 
                 else if(emptyCount > 0)
                 {
-                    GridModel.Cell targetCell = gridModel.grid[i + emptyCount,j];
+                    Cell targetCell = gridModel.GetGrid()[i + emptyCount,j];
 
                     targetCell.isEmpty = false;
                     targetCell.view = cell.view;
@@ -291,7 +301,7 @@ public class GridController : MonoBehaviour
         {
             for(int j = 0; j < gridModel.height; j++)
             {
-                if (gridModel.grid[i, j].isEmpty)
+                if (gridModel.GetGrid()[i, j].isEmpty)
                 {
                     int newCellType = UnityEngine.Random.Range(0, gridModel.colorCount);
                     Crystal crystal = poolManager.GetCrystal();
@@ -303,9 +313,9 @@ public class GridController : MonoBehaviour
                     StartCoroutine(MoveCrystal(crystal, targetPosition, dropDuration));
 
 
-                    gridModel.grid[i, j].type = newCellType;
-                    gridModel.grid[i, j].view = crystal;
-                    gridModel.grid[i, j].isEmpty = false;
+                    gridModel.GetGrid()[i, j].type = newCellType;
+                    gridModel.GetGrid()[i, j].view = crystal;
+                    gridModel.GetGrid()[i, j].isEmpty = false;
 
                     yield return new WaitForSeconds(spawnDelay);
 

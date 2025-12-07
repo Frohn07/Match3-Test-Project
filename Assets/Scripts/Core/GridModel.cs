@@ -7,27 +7,23 @@ using UnityEngine.Rendering;
 
 
 
-[Serializable]
-public class GridModel
+//[Serializable]
+public class GridModel: IGridModel
 {
-    [Serializable]
-    public class Cell
-    {
-        public int type;
-        public bool isEmpty;
-        public Crystal view;
-    }
+    
 
     public Cell[,] grid;
-    public int width = 5;
-    public int height = 5;
-    public int colorCount = 5;
+    public int width { get; private set; }
+    public int height { get; private set; }
+    public int colorCount { get; private set; }
 
 
-    public GridModel(int widht, int height)
+    public GridModel(int widht, int height, int colorCount)
     {
+         
         this.width = widht;
         this.height = height;
+        this.colorCount = colorCount;
         grid = new Cell[this.width, this.height];
 
         for (int i = 0; i < widht; i++)
@@ -42,7 +38,6 @@ public class GridModel
     public void InitGrid() 
     {
         Debug.Log("Init");
-
         do
         {
             for (int i = 0; i < width; i++)
@@ -167,5 +162,10 @@ public class GridModel
             return null;
 
         return grid[i, j];
+    }
+
+    public Cell[,] GetGrid()
+    {
+        return grid;
     }
 }
